@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Day5</title>
+    <style>
+        main{
+            position: absolute; 
+        }
+        .box1{
+            
+            position: relative;
+            border-style: solid;
+            padding: 10px;
+        }
+
+        .box2{
+            max-height: 200px;
+            background: linear-gradient(to right, rgba(3, 49, 38, 0.473) 0%, rgb(1, 1, 72) 100%);
+            color: rgb(205, 248, 248);
+            max-width: 200px;
+            position: sticky;
+
+        }
+
+        #also{
+            left: 300px;
+            top:100px;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            border-style: dashed;
+            position:relative;
+        }
+
+        #also:hover{
+            background: linear-gradient(to right, rgba(6, 164, 127, 0.473) 0%, rgb(90, 215, 13) 100%);
+        }
+
+        #this{
+            left: 260px;
+        }
+
+        #that{
+            bottom: 355px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <head>day5</head>
+    <div class="box1">
+        <div class="box2" id="this">
+            <h1>this</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum tenetur odio dolorem accusantium incidunt, nostrum aspernatur? Facere eligendi, inventore, pariatur id voluptatem reprehenderit illo ad explicabo illum ullam possimus natus.</p>
+        </div>
+        <div class="box2" id="that">
+            <h1>that</h1>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellat cumque quibusdam ad magni tempora minima, optio necessitatibus dolor fugit! Eaque, quaerat quia? Perspiciatis ducimus necessitatibus adipisci officiis tenetur. Voluptatum, nobis?</p>
+        </div>
+        <div class="box2">
+            <h1>that</h1>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellat cumque quibusdam ad magni tempora minima, optio necessitatibus dolor fugit! Eaque, quaerat quia? Perspiciatis ducimus necessitatibus adipisci officiis tenetur. Voluptatum, nobis?</p>
+        </div>
+    </div>
+    <div class="box2" id="also">
+        <h1>Also</h1>
+        <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est possimus nisi nobis impedit fuga eum placeat exercitationem deleniti. Mollitia iure asperiores odit exercitationem molestias at adipisci repellat dolorem libero corporis!
+        </p>
+    </div>
+</body>
+</html>

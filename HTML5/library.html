@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WonderBooks - Interactive Library</title>
+    <style>
+        :root {
+            --wood-color: #A0673A;
+            --wood-dark: #6C4223;
+            --wood-light: #C0875B;
+            --page-color: #F8F5E9;
+            --background-texture: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="1" cy="1" r="1" fill="%23DDD"/><circle cx="11" cy="11" r="1" fill="%23DDD"/></svg>');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background-color: #F5F5DC;
+            background-image: var(--background-texture);
+            background-size: 20px 20px;
+            overflow-x: hidden;
+            perspective: 1500px;
+            perspective-origin: 50% 50px;
+        }
+
+        .library-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: var(--wood-dark);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .tagline {
+            font-style: italic;
+            color: #666;
+        }
+
+        .bookshelf {
+            background: linear-gradient(180deg, var(--wood-color) 0%, var(--wood-dark) 100%);
+            height: 600px;
+            border-radius: 10px;
+            padding: 20px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform-style: preserve-3d;
+            margin-bottom: 50px;
+            transform: rotateX(5deg) translateY(10px);
+            border: 5px solid var(--wood-light);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .shelf {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0;
+            padding: 20px 10px;
+            height: 100%;
+            align-content: flex-start;
+            overflow-y: auto;
+            scrollbar-width: none;
+            position: relative;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(0, 0, 0, 0.03),
+                rgba(0, 0, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 10px
+            );
+        }
+        
+        .shelf::-webkit-scrollbar { display: none; }
+
+        .shelf-divider {
+            position: absolute;
+            width: calc(100% - 20px);
+            height: 5px;
+            background: var(--wood-color);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -2px 5px rgba(0,0,0,0.4);
+            left: 10px;
+            border-radius: 2px;
+        }
+        .shelf-divider:nth-child(1) { top: 25%; }
+        .shelf-divider:nth-child(2) { top: 50%; }
+        .shelf-divider:nth-child(3) { top: 75%; }
+        
+        .book {
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-origin: left center;
+            margin-right: -10px;
+            z-index: 1;
+            height: 200px;
+            margin-top: 10px;
+            filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.4));
+        }
+
+        .book:hover {
+            transform: translateX(15px) translateY(-5px) rotateY(-20deg);
+            z-index: 100;
+        }
+
+        .book.active {
+            transform: translateX(150px) translateY(-80px) rotateY(-170deg) scale(1.1);
+            z-index: 1000;
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .book-spine {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 2px 5px 5px 2px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3), inset -5px 0 10px rgba(0, 0, 0, 0.2);
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateZ(10px);
+            background-size: cover;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .book-texture::before, .book-texture::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            mix-blend-mode: multiply;
+        }
+
+        .book-texture::before {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADdPNAHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIBPZy1fwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEGSURBVHic7dYxDkAwDAQx6n+rS6hSCDIILtU9i8Yk1+4f+d/D//sHAAAAAADA3857/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA3857/wMAAAAAAAAgX6JtD2R4Y8vSAAAAAElFTkSuQmCC');
+            background-size: 10px;
+            opacity: 0.05;
+        }
+
+        .book-texture::after {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="f1"><feTurbulence baseFrequency="0.9" numOctaves="3" result="f1_result"/><feColorMatrix in="f1_result" type="saturate" values="0.2"/></filter><rect width="100%" height="100%" fill="transparent" filter="url(%23f1)"/></svg>');
+            opacity: 0.05;
+        }
+
+        .book-spine .title, .book-spine .author {
+            color: white;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            text-align: center;
+            padding: 5px 3px;
+            text-shadow: 1px 1px 2px black;
+            font-weight: bold;
+            max-height: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .book-spine .title {
+            font-size: 13px;
+            flex-grow: 1;
+        }
+        
+        .book-spine .author {
+            font-size: 9px;
+            color: #ccc;
+        }
+
+        .book-pages {
+            position: absolute;
+            width: 95%;
+            height: 98%;
+            background: linear-gradient(90deg, #F8F5E9, #EEEAD9);
+            left: 5%;
+            border-radius: 0 3px 3px 0;
+            box-shadow: 
+                inset 0 0 10px rgba(0, 0, 0, 0.1),
+                5px 0 15px rgba(0, 0, 0, 0.2);
+            transform: rotateY(90deg) translateZ(10px);
+            border-left: 1px solid #d4c5b3;
+        }
+
+        .book-top {
+            position: absolute;
+            width: 100%;
+            height: 5%;
+            background: linear-gradient(to bottom, #F8F5E9, #EEEAD9);
+            top: 0;
+            border-radius: 3px 3px 0 0;
+            transform: rotateX(90deg) translateZ(100px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Book details modal */
+        .book-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .book-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .book-details {
+            background: white;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            display: flex;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            transform: scale(0.8) translateY(-50px);
+            transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+        }
+
+        .book-modal.active .book-details {
+            transform: scale(1) translateY(0);
+        }
+
+        .book-cover-large {
+            width: 40%;
+            background: var(--book-color, #333);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--book-text-color, white);
+            font-size: 2rem;
+            text-align: center;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset -15px 0 30px rgba(0, 0, 0, 0.3);
+            background-size: cover;
+            background-repeat: no-repeat;
+            border-right: 5px solid var(--page-color);
+        }
+        
+        .book-cover-large h2 {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .book-cover-large .author {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-top: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .book-cover-large::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(0,0,0,0.3));
+        }
+
+        .book-info {
+            width: 60%;
+            padding: 40px;
+            overflow-y: auto;
+            background: var(--page-color);
+            position: relative;
+        }
+
+        .book-info h2 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .book-info .author {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .book-info .description {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--wood-light);
+            padding-left: 15px;
+            background: #fdfaf5;
+        }
+
+        .book-info .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .meta-item {
+            background: #e9e5d9;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid #dcd7c9;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .close-modal:hover {
+            background: #fff;
+            color: #333;
+            transform: rotate(90deg);
+        }
+
+        .read-btn {
+            background: var(--wood-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background 0.3s ease, transform 0.2s ease;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .read-btn:hover {
+            background: var(--wood-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .bookshelf {
+                height: auto;
+                min-height: 500px;
+                padding: 10px 20px;
+            }
+
+            .book {
+                width: 50px;
+                height: 180px;
+            }
+
+            .book-spine .title {
+                font-size: 10px;
+            }
+            
+            .book-details {
+                flex-direction: column;
+                width: 95%;
+                max-height: 95vh;
+            }
+
+            .book-cover-large, .book-info {
+                width: 100%;
+            }
+
+            .book-cover-large {
+                height: 200px;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="library-container">
+        <header>
+            <h1>WonderBooks</h1>
+            <p class="tagline">Your interactive digital library of self-help classics</p>
+        </header>
+
+        <div class="bookshelf">
+            <div class="shelf" id="bookshelf">
+                <div class="shelf-divider" style="top: 25%;"></div>
+                <div class="shelf-divider" style="top: 50%;"></div>
+                <div class="shelf-divider" style="top: 75%;"></div>
+                </div>
+            <div class="shelf-decoration"></div>
+        </div>
+    </div>
+
+    <div class="book-modal" id="bookModal">
+        <div class="book-details">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <div class="book-cover-large" id="modalCover">
+                <h2 id="modalTitleShort">Book Title</h2>
+                <p class="author" id="modalAuthorShort">Author Name</p>
+            </div>
+            <div class="book-info">
+                <h2 id="modalTitle">Book Title</h2>
+                <p class="author" id="modalAuthor">Author Name</p>
+                <div class="meta" id="modalMeta">
+                    </div>
+                <p class="description" id="modalDescription">Book description goes here...</p>
+                <button class="read-btn">Read This Book</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample book data - now with a wider range of themes
+        const library = [
+            {
+                id: 1,
+                title: "Atomic Habits",
+                shortTitle: "Atomic Habits",
+                author: "James Clear",
+                year: 2018,
+                genre: "Self-Help",
+                pages: 320,
+                description: "A comprehensive guide to building good habits and breaking bad ones, revealing practical strategies for making tiny changes that deliver remarkable results.",
+                color: "#1E3B5D",
+                textColor: "#FFFFFF",
+                coverPattern: "linear-gradient(45deg, #1E3B5D, #2B547E)"
+            },
+            {
+                id: 2,
+                title: "The 7 Habits of Highly Effective People",
+                shortTitle: "7 Habits",
+                author: "Stephen R. Covey",
+                year: 1989,
+                genre: "Leadership",
+                pages: 381,
+                description: "A cornerstone of personal development literature, this book presents a principle-centered approach to solving personal and professional problems, fostering integrity, and fairness.",
+                color: "#4A2B5A",
+                textColor: "#FFFFFF",
+                coverPattern: "repeating-linear-gradient(45deg, #4A2B5A, #4A2B5A 10px, #6C3D82 10px, #6C3D82 20px)"
+            },
+            {
+                id: 3,
+                title: "Thinking, Fast and Slow",
+                shortTitle: "Thinking",
+                author: "Daniel Kahneman",
+                year: 2011,
+                genre: "Psychology",
+                pages: 499,
+                description: "Nobel Prize winner Daniel Kahneman takes us on a groundbreaking tour of the mind and explains the two systems that drive the way we think—System 1 (fast, intuitive) and System 2 (slow, logical).",
+                color: "#5B7C71",
+                textColor: "#FFFFFF",
+                coverPattern: "linear-gradient(to right, #5B7C71, #48645C)"
+            },
+            {
+                id: 4,
+                title: "The Power of Habit",
+                shortTitle: "Habit",
+                author: "Charles Duhigg",
+                year: 2012,
+                genre: "Psychology",
+                pages: 371,
+                description: "Pulitzer Prize-winning reporter Charles Duhigg explains the science behind habits—how they are formed, how they can be changed, and their profound impact on our lives and society.",
+                color: "#7E5833",
+                textColor: "#FFFFFF",
+                coverPattern: "linear-gradient(135deg, #7E5833, #A57C4F)"
+            },
+            {
+                id: 5,
+                title: "Mindset: The New Psychology of Success",
+                shortTitle: "Mindset",
+                author: "Carol S. Dweck",
+                year: 2006,
+                genre: "Psychology",
+                pages: 276,
+                description: "World-renowned psychologist Carol S. Dweck reveals how a 'growth mindset' can unlock our potential and lead to success in virtually every area of life.",
+                color: "#B4654A",
+                textColor: "#FFFFFF",
+                coverPattern: "radial-gradient(circle, #B4654A, #D1896E)"
+            },
+            {
+                id: 6,
+                title: "Dare to Lead",
+                shortTitle: "Dare to Lead",
+                author: "Brené Brown",
+                year: 2018,
+                genre: "Leadership",
+                pages: 336,
+                description: "Based on new research, Brené Brown demystifies leadership and gives us the tools to put courage over comfort. It's a manual for daring to lead.",
+                color: "#832C3A",
+                textColor: "#FFFFFF",
+                coverPattern: "linear-gradient(90deg, #832C3A, #A64756)"
+            },
+            {
+                id: 7,
+                title: "The Subtle Art of Not Giving a F*ck",
+                shortTitle: "Not Giving a F*ck",
+                author: "Mark Manson",
+                year: 2016,
+                genre: "Self-Help",
+                pages: 224,
+                description: "In this counterintuitive self-help guide, Mark Manson argues that improving our lives is not about being more positive, but about learning to prioritize what truly matters.",
+                color: "#2C2C2C",
+                textColor: "#FFFFFF",
+                coverPattern: "linear-gradient(to right, #2C2C2C, #4A4A4A)"
+            },
+            {
+                id: 8,
+                title: "Daring Greatly",
+                shortTitle: "Daring Greatly",
+                author: "Brené Brown",
+                year: 2012,
+                genre: "Psychology",
+                pages: 320,
+                description: "Brené Brown explores the concept of vulnerability and how it is the birthplace of connection, courage, and creativity. A powerful call to live a wholehearted life.",
+                color: "#4D8076",
+                textColor: "#FFFFFF",
+                coverPattern: "linear-gradient(to bottom, #4D8076, #639E94)"
+            },
+            {
+                id: 9,
+                title: "Man's Search for Meaning",
+                shortTitle: "Search for Meaning",
+                author: "Viktor E. Frankl",
+                year: 1946,
+                genre: "Memoir",
+                pages: 165,
+                description: "Psychiatrist Viktor Frankl's memoir recounts his experiences as a prisoner in Nazi concentration camps and details his psychotherapeutic method of finding meaning in all forms of existence, even the most brutal ones.",
+                color: "#3A556B",
+                textColor: "#FFFFFF",
+                coverPattern: "linear-gradient(135deg, #3A556B, #4B6E8A)"
+            },
+            {
+                id: 10,
+                title: "The Alchemist",
+                shortTitle: "The Alchemist",
+                author: "Paulo Coelho",
+                year: 1988,
+                genre: "Philosophical Fiction",
+                pages: 208,
+                description: "The story of a young shepherd boy who journeys from Spain to the Egyptian desert in search of a buried treasure, only to discover a different kind of treasure within himself.",
+                color: "#A87C39",
+                textColor: "#FFFFFF",
+                coverPattern: "linear-gradient(135deg, #A87C39, #C49F5A)"
+            },
+            {
+                id: 11,
+                title: "Sapiens: A Brief History of Humankind",
+                shortTitle: "Sapiens",
+                author: "Yuval Noah Harari",
+                year: 2011,
+                genre: "Non-Fiction",
+                pages: 443,
+                description: "Yuval Noah Harari examines the course of human history from the Stone Age to the twenty-first century, exploring how we came to believe in shared myths that shaped our world.",
+                color: "#54466B",
+                textColor: "#FFFFFF",
+                coverPattern: "linear-gradient(to right, #54466B, #725D8F)"
+            },
+            {
+                id: 12,
+                title: "Meditations",
+                shortTitle: "Meditations",
+                author: "Marcus Aurelius",
+                year: 180,
+                genre: "Philosophy",
+                pages: 256,
+                description: "A series of personal writings by Roman Emperor Marcus Aurelius, reflecting on Stoic philosophy, providing an insight into the mind of one of history's great leaders.",
+                color: "#3A4F6B",
+                textColor: "#FFFFFF",
+                coverPattern: "repeating-linear-gradient(90deg, #3A4F6B, #3A4F6B 10px, #5D799B 10px, #5D799B 20px)"
+            }
+        ];
+
+        // DOM elements
+        const bookshelf = document.getElementById('bookshelf');
+        const bookModal = document.getElementById('bookModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalTitleShort = document.getElementById('modalTitleShort');
+        const modalAuthor = document.getElementById('modalAuthor');
+        const modalAuthorShort = document.getElementById('modalAuthorShort');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalMeta = document.getElementById('modalMeta');
+        const modalCover = document.getElementById('modalCover');
+        
+        let activeBookElement = null;
+
+        // Function to determine book width based on page count
+        function getBookWidth(pages) {
+            const minWidth = 40;
+            const maxWidth = 80;
+            const minPages = 150;
+            const maxPages = 500;
+            
+            if (pages <= minPages) return minWidth;
+            if (pages >= maxPages) return maxWidth;
+            
+            return minWidth + ((pages - minPages) / (maxPages - minPages)) * (maxWidth - minWidth);
+        }
+
+        // Display books on the shelf
+        function displayBooks() {
+            // bookshelf.innerHTML = '';
+            
+            // Randomize book order for a more natural look
+            const shuffledLibrary = library.sort(() => 0.5 - Math.random());
+            
+            shuffledLibrary.forEach(book => {
+                const bookWidth = getBookWidth(book.pages);
+                
+                const bookElement = document.createElement('div');
+                bookElement.className = 'book';
+                bookElement.dataset.id = book.id;
+                bookElement.style.width = `${bookWidth}px`;
+                bookElement.innerHTML = `
+                    <div class="book-spine book-texture" style="background-color: ${book.color}; background-image: ${book.coverPattern};">
+                        <div class="title" style="color: ${book.textColor}">${book.shortTitle}</div>
+                        <div class="author" style="color: ${book.textColor}">${book.author}</div>
+                    </div>
+                    <div class="book-pages"></div>
+                    <div class="book-top"></div>
+                `;
+                bookElement.addEventListener('click', () => openBookModal(book, bookElement));
+                bookshelf.appendChild(bookElement);
+            });
+        }
+
+        // Open book modal with details
+        function openBookModal(book, bookElement) {
+            if (activeBookElement) {
+                activeBookElement.classList.remove('active');
+            }
+            
+            activeBookElement = bookElement;
+            activeBookElement.classList.add('active');
+            
+            modalTitle.textContent = book.title;
+            modalTitleShort.textContent = book.title;
+            modalAuthor.textContent = book.author;
+            modalAuthorShort.textContent = book.author;
+            modalDescription.textContent = book.description;
+            
+            // Set cover background, including the pattern
+            modalCover.style.setProperty('--book-color', book.color);
+            modalCover.style.setProperty('--book-text-color', book.textColor);
+            modalCover.style.backgroundImage = book.coverPattern;
+            
+            modalMeta.innerHTML = '';
+            const metaItems = [
+                { label: 'Year', value: book.year },
+                { label: 'Genre', value: book.genre },
+                { label: 'Pages', value: book.pages }
+            ];
+            
+            metaItems.forEach(item => {
+                const metaElement = document.createElement('div');
+                metaElement.className = 'meta-item';
+                metaElement.textContent = `${item.label}: ${item.value}`;
+                modalMeta.appendChild(metaElement);
+            });
+            
+            bookModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeBookModal() {
+            bookModal.classList.remove('active');
+            
+            if (activeBookElement) {
+                activeBookElement.classList.remove('active');
+                activeBookElement = null;
+            }
+            
+            document.body.style.overflow = 'auto';
+        }
+
+        // Event listeners
+        closeModal.addEventListener('click', closeBookModal);
+        bookModal.addEventListener('click', (e) => {
+            if (e.target === bookModal) {
+                closeBookModal();
+            }
+        });
+
+        // Initialize the bookshelf
+        displayBooks();
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!--sample-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>web-tech Day1</title>
+    <style>
+        body{
+            background-color: rgb(237, 245, 224);
+            color:#a6c6e5;
+        }
+
+        a{
+          color:#a6c6e5; 
+          text-decoration: none; 
+        }
+
+        a :hover{
+            color:bisque;
+            text-transform: capitalize;
+        }
+        h1{
+            color:red;
+            background: inherit;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Me and Samvit</h1>
+    </header>
+
+    <form method="post"> <!--method=get/post; action= [file - server side scripiting] submmit; target = [what info u want from server]-->
+        <label for="urname">plz enter name: </label> 
+        <input id="urname" name="urname" required> <br>
+        number: <input type="number" max="10" min="1"><br>
+        color:<input type="color" />
+        <button>Do not click</button><br>
+    </form>
+
+    <footer>
+        <p>do not contact here <a href="#">Samundsab@hemail.com</a> </p>
+    </footer>
+</body>
+</html>
