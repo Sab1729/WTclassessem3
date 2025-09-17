@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samarpana Run Registration</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #eb9191;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    color: #333;
+}
+
+.container {
+    background-color: white;
+    border-radius: 100px;
+    box-shadow: 0 4px 8px rgba(21, 255, 0, 0.1);
+    max-width: 900px;
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(to right, rgb(252, 136, 13) 0%, rgb(10, 133, 1) 100%);
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+}
+
+header h1 {
+    font-size: 2em;
+    margin: 0;
+}
+
+header h2 {
+    font-size: 1.2em;
+    margin: 5px 0 0;
+    font-weight: 400;
+}
+
+#currentDateTime {
+    font-size: 0.9em;
+    margin: 5px 0 0;
+    color : blueviolet;
+}
+
+main {
+    padding: 20px;
+}
+
+.registration-form-header {
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-size: 1.2em;
+    font-weight: 500;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    flex: 1 1 100%;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+input, select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="date"] {
+    position: relative;
+    padding-right: 30px;
+}
+
+.size-table-container {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+th, td {
+    border: 4px solid #024520;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #913434;
+    font-weight: 500;
+    color:aqua;
+}
+
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.checkbox-group input {
+    width: auto;
+    margin-right: 10px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    border-radius: 10px;
+    gap: 20px;
+}
+
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.reset-btn {
+    background-color: #e0e0e0;
+    color: #555;
+    border: 1px solid #d0d0d0;
+}
+
+.reset-btn:hover {
+    background-color: #d0d0d0;
+}
+
+.submit-btn {
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-group {
+        flex: 1 1 100%;
+        margin-bottom: 15px;
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Samarpana Run</h1>
+            <h2>For the Indian Army!</h2>
+            <p id="currentDateTime"></p>
+        </header>
+
+        <main>
+            <div class="registration-form-header">
+                <h3>Registration Form</h3>
+            </div>
+            
+            <form id="registrationForm" onsubmit="return validateForm()">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">Full Name </label>
+                        <input type="text" id="fullName" name="fullName" placeholder="e.g., Jamal Khan">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email </label>
+                        <input type="email" id="email" name="email" placeholder="e.g., jamalkhan@likesfiredchicken.boom">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mobileNumber">Mobile Number </label>
+                        <input type="tel" id="mobileNumber" name="mobileNumber" placeholder="e.g., 9899099200">
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth </label>
+                        <input type="date" id="dob" name="dob">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="university">University/Organization </label>
+                        <input type="text" id="university" name="university" placeholder="e.g., IITB">
+                    </div>
+                    <div class="form-group">
+                        <label for="usn">USN (College ID) </label>
+                        <input type="text" id="usn" name="usn" placeholder="e.g., PES9PG26FG100">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">City </label>
+                        <input type="text" id="city" name="city" placeholder="e.g., here">
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State </label>
+                        <input type="text" id="state" name="state" placeholder="e.g., Liquid">
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="pincode">Pincode </label>
+                    <input type="text" id="pincode" name="pincode" placeholder="e.g., 566676">
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="tShirtSize">T-shirt Size </label>
+                    <select id="tShirtSize" name="tShirtSize">
+                        <option value="">Select size</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                        <option value="3XL">3XL</option>
+                        <option value="!00XL">100XL</option>
+                    </select>
+                </div>
+
+                <div class="size-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Size</th>
+                                <th>Chest (in)</th>
+                                <th>Chest (cm)</th>
+                                <th>Length (cm)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>XS</td>
+                                <td>34"</td>
+                                <td>86cm</td>
+                                <td>65cm</td>
+                            </tr>
+                            <tr>
+                                <td>S</td>
+                                <td>36"</td>
+                                <td>91cm</td>
+                                <td>67cm</td>
+                            </tr>
+                            <tr>
+                                <td>M</td>
+                                <td>38"</td>
+                                <td>97cm</td>
+                                <td>70cm</td>
+                            </tr>
+                            <tr>
+                                <td>L</td>
+                                <td>40"</td>
+                                <td>102cm</td>
+                                <td>72cm</td>
+                            </tr>
+                            <tr>
+                                <td>XL</td>
+                                <td>42"</td>
+                                <td>107cm</td>
+                                <td>75cm</td>
+                            </tr>
+                            <tr>
+                                <td>XXL</td>
+                                <td>44"</td>
+                                <td>112cm</td>
+                                <td>77cm</td>
+                            </tr>
+                            <tr>
+                                <td>3XL</td>
+                                <td>46"</td>
+                                <td>117cm</td>
+                                <td>79cm</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="terms" name="terms">
+                    <label for="terms">I confirm the information is accurate and agree to the event terms and waiver.</label>
+                </div>
+
+                <div class="button-group">
+                    <button type="reset" class="btn reset-btn">Reset Form</button>
+                    <button type="submit" class="btn submit-btn">Submit Form</button>
+                </div>
+            </form>
+        </main>
+    </div>
+    
+    <script>
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+    // Function to display the current date and time
+    function updateDateTime() {
+        const now = new Date();
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true };
+        const formattedDate = now.toLocaleDateString('en-US', options).replace(/(\d+)\/(\d+)\/(\d+),?/, '$2/$1/$3');
+        const formattedTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+        document.getElementById('currentDateTime').innerText = formattedDate + ' ' + formattedTime.toUpperCase();
+    }
+
+    // Call the function on page load
+    updateDateTime();
+    // Update every second
+    setInterval(updateDateTime, 1000);
+});
+
+function validateForm() {
+    const requiredFields = [
+        'fullName', 'email', 'mobileNumber', 'dob', 'university', 'usn', 'city', 'state', 'pincode', 'tShirtSize'
+    ];
+    
+    let allFieldsFilled = true;
+    let emptyFieldName = '';
+    
+    for (const fieldId of requiredFields) {
+        const field = document.getElementById(fieldId);
+        if (!field.value.trim()) {
+            allFieldsFilled = false;
+            // Get the name from the label element
+            emptyFieldName = document.querySelector(`label[for="${fieldId}"]`).innerText.replace('*', '').trim();
+            break; 
+        }
+    }
+    
+    if (!allFieldsFilled) {
+        alert(`Please fill the required empty field: ${emptyFieldName}.`);
+        return false;
+    }
+
+    const termsCheckbox = document.getElementById('terms');
+    if (!termsCheckbox.checked) {
+        alert('You must agree to the event terms and waiver.');
+        return false;
+    }
+
+    // Basic email validation
+    const email = document.getElementById('email').value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
+        return false;
+    }
+
+    // Basic mobile number validation
+    const mobileNumber = document.getElementById('mobileNumber').value;
+    const mobileRegex = /^[0-9]{10}$/;
+    if (!mobileRegex.test(mobileNumber)) {
+        alert('Please enter a valid 10-digit mobile number.');
+        return false;
+    }
+
+    alert('Form submitted successfully!');
+    return true;
+}
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment 1: Samarpana Marathon</title>
+</head>
+<body>
+    <h1>Samarpana Marathon</h1>
+    <div id="dt">
+        <h2>For the Indian Army</h2>
+        <h2 id="dynamci-Dateandtime"></h2>
+        <script>
+            let dt = new Date();
+            document.getElementById("dynamci-Dateandtime").innerText = dt.toLocaleString();
+        </script>
+    </div>
+    <h2>Regestrayion forn</h2>
+    <form action="/submit_registration" method="post">
+        <label for="name">Full Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="age">Mobile number:</label><br>
+        <input type="number" id="age" name="age" required><br><br>
+
+        <label for="university">University:</label><br>
+        <input type="text" id="university" name="university" required><br><br>
+
+        <label for="city">City:</label><br>
+        <input type="text" id="city" name="city" required><br><br>
+
+        <label for="pin">Pin Code:</label><br>
+        <input type="number" id="pin" name="pin" required><br><br>
+
+        <label for="age">T-shirt size</label><br>
+        <input type="number" id="tss" name="age" required><br><br>
+    </form>
+</body>
+</html>

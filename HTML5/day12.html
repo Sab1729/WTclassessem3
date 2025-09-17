@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day12</title>
+</head>
+<body>
+    <h1 id="S">Halo!</h1>
+    <p>uno</p>
+    <p>doce</p>
+    <p>tres</p>
+    <button onclick="f()">click here</button>
+    <script>
+        function f(){
+        document.getElementById("S").innerHTML="Hola! como estas?"
+        let doc = document.getElementsByTagName("p")
+        doc[0].style.background = "#000000"
+        doc[0].style.color = "#ffffff"
+        doc[1].style.color = "#33ff10"
+        document.getElementsByTagName("title")[0].innerHTML="I am a changed page now!"
+        document.getElementsByTagName("button")[0].innerHTML="Do not click!" 
+        }
+</script>
+</body>
+</html>

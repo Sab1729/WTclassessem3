@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <pre>
+        #   #   ##### 
+        #   #     #
+        # # #     #
+        #   #
+    </pre>
+    <button onclick="func()">here</button>
+    <script>
+        //loops 
+        a = 1 // is imp. for the for loop to work
+        b = 1
+        for(i=0;a<47;a++,b--){
+            document.write(a + " "+ b+"<br>");
+        }
+        var b // position (/or) intializatio  doesn't matter
+         a = 1
+
+        //functions
+        function f(){
+            document.write("<br> Coco was here.")
+        }
+        f()
+        f()
+
+        /* 
+        this is allowed var a = 1; var a = 2;
+        this is not     let a = 1; let a = 3;
+        */
+
+
+        //this thing:
+
+        function add(a, b){
+            return a + b
+        }
+
+        function check(a){
+            if(a > 10){alert("Too big of a number!"); return "yay error!!";}
+                
+            
+        }
+
+        document.write("<br>"+add(100,10))
+        document.write("<br>"+check(11))
+
+        a = ""
+        function func(){
+            alert("Do not click the button"+a)
+            a += "!"
+        }
+
+        //arrays
+
+        this_guy = [1,2,3]
+        for(i in this_guy){
+            document.write(i+"    ")
+        }
+        
+        //array functions
+        this_guy.push("123")
+        this_guy[this_guy.length] = 12
+        document.write("<br>" +  this_guy)
+
+        this_guy.shift()
+
+        document.write("<br>" + this_guy)
+
+        
+
+
+
+    </script>
+</body>
+</html>

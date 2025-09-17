@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    //arrays object and function on thems
+    a = [1,2,3,4]
+    document.writeln(a+"<br>")
+
+    //push
+    a.push("this")
+    document.writeln(a+"<br>")
+    //pop
+    a.pop()
+    document.writeln(a+"<br>")
+
+    //joins all the elements with the passed in parameters into a string
+    b = a.join("")
+    document.writeln( b+ " " + typeof b + "<br>")
+
+    //concat
+    c = a.concat(b)
+    document.writeln(c + "<br>")
+
+    //shift
+    a.shift()
+    document.writeln(a + "<br>")
+    //unshift
+    a.unshift("new","many","added")
+    document.writeln(a + "<br>")
+
+    //deletion
+    //-->1. pop
+    //-->2. shift
+    //-->3. delete keyword
+    delete a[3] // delets index 3
+    document.write(a,"<br>")
+    //-->4. slice
+    a.concat
+    a.splice(2,2) //removes 1 values from index no. 2
+    document.write(a,"<br>")
+    a.splice(4,1,"that1") //removes and puts passed new elements in the place
+    document.write(a,"<br>")
+
+    //reverse
+    a.reverse()
+    document.write(a,"<br>") 
+
+    //MAX_VALUE, MIN_VALUE, NaN, sort ... etc
+
+    //string handelin
+    nam = "Al Bani Coco"
+    document.write(nam+"<br>")
+    nam1 = nam.slice(1,2)
+    document.write(nam1+"<br>")
+    nam2 = nam.substring(1,5)
+    document.write(nam2+"<br>")
+    namlist = nam.split(' ')
+    document.write(namlist+"<br>")
+
+    //date function
+    d = new Date()
+    document.write(d + "<br")
+    
+    //math
+
+    document.write(Math.PI)
+    
+    </script>
+</body>
+</html>
